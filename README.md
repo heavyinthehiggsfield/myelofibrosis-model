@@ -1,79 +1,71 @@
-# Data Project Template
+# Myelofibrosis: Modeling Patient Time-to-Event and Survivalability Classification
 
-<a target="_blank" href="https://datalumina.com/">
-    <img src="https://img.shields.io/badge/Datalumina-Project%20Template-2856f7" alt="Datalumina Project" />
-</a>
+## Run Instructions
+1. git clone the repo
 
-## Cookiecutter Data Science
-This project template is a simplified version of the [Cookiecutter Data Science](https://cookiecutter-data-science.drivendata.org) template, created to suit the needs of Datalumina and made available as a GitHub template.
-
-## Adjusting .gitignore
-
-Ensure you adjust the `.gitignore` file according to your project needs. For example, since this is a template, the `/data/` folder is commented out and data will not be exlucded from source control:
-
-```plaintext
-# exclude data from source control by default
-# /data/
-```
-
-Typically, you want to exclude this folder if it contains either sensitive data that you do not want to add to version control or large files.
-
-## Duplicating the .env File
-To set up your environment variables, you need to duplicate the `.env.example` file and rename it to `.env`. You can do this manually or using the following terminal command:
-
-```bash
-cp .env.example .env # Linux, macOS, Git Bash, WSL
-copy .env.example .env # Windows Command Prompt
-```
-
-This command creates a copy of `.env.example` and names it `.env`, allowing you to configure your environment variables specific to your setup.
+2. create new venv (virtual environment) and select it as your python interpreter (in your IDE)
 
 
-## Project Organization
+3. source your new venv (aka code will from this environment)
+    source venv/bin/activate
 
-```
-├── LICENSE            <- Open-source license if one is chosen
-├── README.md          <- The top-level README for developers using this project
-├── data
-│   ├── external       <- Data from third party sources
-│   ├── interim        <- Intermediate data that has been transformed
-│   ├── processed      <- The final, canonical data sets for modeling
-│   └── raw            <- The original, immutable data dump
-│
-├── models             <- Trained and serialized models, model predictions, or model summaries
-│
-├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-│                         the creator's initials, and a short `-` delimited description, e.g.
-│                         `1.0-jqp-initial-data-exploration`
-│
-├── references         <- Data dictionaries, manuals, and all other explanatory materials
-│
-├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-│   └── figures        <- Generated graphics and figures to be used in reporting
-│
-├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-│                         generated with `pip freeze > requirements.txt`
-│
-└── src                         <- Source code for this project
-    │
-    ├── __init__.py             <- Makes src a Python module
-    │
-    ├── config.py               <- Store useful variables and configuration
-    │
-    ├── dataset.py              <- Scripts to download or generate data
-    │
-    ├── features.py             <- Code to create features for modeling
-    │
-    │    
-    ├── modeling                
-    │   ├── __init__.py 
-    │   ├── predict.py          <- Code to run model inference with trained models          
-    │   └── train.py            <- Code to train models
-    │
-    ├── plots.py                <- Code to create visualizations 
-    │
-    └── services                <- Service classes to connect with external platforms, tools, or APIs
-        └── __init__.py 
-```
+4. Install requirements.txt (if you still have trouble with imports you can pip install each one)
+    pip install -r requirements.txt
 
---------
+5. Run syntheticData.py script to validate python setup
+
+6. Run trainTest.py to validate XGBoost setup (set to randomForest until below is set)
+    If issues appear regarding libomp, you may need to install globally on your local:
+        brew install libomp
+    which may first require MacOS Command line tools:
+        xcode-select --install
+
+If successful, this should mean that all major functionality is working as expected - real data can be pointed to in place of the synthetic data and training can begin, with testing/optimizing/tracking done simultaneously using Optuna & Weights and Biases (setup for which will be included in next commit)
+
+Note: any model trained within this project will be saved in the '/models' folder
+To Run a prediction, use predict.py and specify the model?
+
+# 🧱 Overall Pipeline
+- Load the data
+
+- Preprocess (handle categorical, normalize/scale if needed)
+
+- Train-test split
+
+- Train XGBoost regressor
+
+- Evaluate with relevant metrics
+
+- (Optional) Hyperparameter tuning with Optuna
+
+- (Optional) Log everything with Weights & Biases
+
+## Some Major Project Components
+1. preprocess.py
+    data setup before training. This will likely contain a generic script agnostic to the data we want to inlude (which will be included in the main train.py script)
+
+2. config.py
+    main configuration zone, environment variables / specifics / etc. that all scripts can be set to pull from so all 'configs' are localized to one file (and can be verified as such before running)
+
+3. testTrain.py
+    just a generic XGBoost train script without cross validation etc.
+
+4. train.py
+    Main starting point for training based on info set in config.py
+
+5. Stripped down components, good for separating MLOps flows / notebook integrations:
+- dataset.py 
+    (main data setup pre-training)
+- train.py 
+    (main training hub)
+- predict.py 
+    (barebones prediction)
+- evaluate.py 
+    (testing / evaluating pipeline)
+- optuna.py 
+    (hyperparameter tuning / optimization)
+    
+
+## Testing Plan ?
+
+## Anything else ?
